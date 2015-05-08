@@ -4,6 +4,7 @@ using namespace std;
 #define REPOSITORY_INVALID 0
 #define REPOSITORY_TYPE_ONE 1
 #define REPOSITORY_TYPE_TWO 2
+#define REPOSITORY_TYPE_THREE 3
 
 struct Resource{
     Resource(int index){index_ = index;};
@@ -71,21 +72,29 @@ void CreateOneResourceType(int type_id, int res_index){
     }
 }
 
+struct RepositoryDecriptor{
+    int rep_id;
+    int type_id;
+    int res_index;
+};
+
+static RepositoryDecriptor REPOSITORY_RESOURCE_DESCRIPTOR[] = {
+    {REPOSITORY_TYPE_ONE, TYPE_A_ID, 1},
+    {REPOSITORY_TYPE_ONE, TYPE_B_ID, 1},
+    {REPOSITORY_TYPE_TWO, TYPE_A_ID, 2},
+    {REPOSITORY_TYPE_TWO, TYPE_B_ID, 2},
+    {REPOSITORY_TYPE_TWO, TYPE_C_ID, 2},
+    {REPOSITORY_TYPE_THREE, TYPE_A_ID, 3},
+};
+
 void CreateRepResources(int rep_id[], int rep_num){
-     for(long loop = 0; loop < rep_num; loop++){
-        switch (rep_id[loop]) {
-            case REPOSITORY_TYPE_ONE: {
-                CreateOneResourceType(TYPE_A_ID, 1);
-                CreateOneResourceType(TYPE_B_ID, 1);
-                break;
+    for(long rep_loop = 0; rep_loop < rep_num; rep_loop++)
+    {
+        for(long loop = 0; loop < sizeof(REPOSITORY_RESOURCE_DESCRIPTOR) /  sizeof(RepositoryDecriptor); loop++){
+            if(REPOSITORY_RESOURCE_DESCRIPTOR[loop].rep_id == rep_id[rep_loop]){
+                CreateOneResourceType(REPOSITORY_RESOURCE_DESCRIPTOR[loop].type_id, REPOSITORY_RESOURCE_DESCRIPTOR[loop].res_index);
             }
-            case REPOSITORY_TYPE_TWO: {
-                CreateOneResourceType(TYPE_A_ID, 2);
-                CreateOneResourceType(TYPE_B_ID, 2);
-                CreateOneResourceType(TYPE_C_ID, 2);
-                break;
-            }
-        }
+         }
      }
 }
 
@@ -96,8 +105,8 @@ void GetRoAndRunBusiness(int type_id, int res_index){
 
 int main()
 {
-    int  rep_id[2] = {REPOSITORY_TYPE_ONE, REPOSITORY_TYPE_TWO};  // resource repository id
-	CreateRepResources(rep_id, sizeof(rep_id));
+    int rep_ids[2] = {REPOSITORY_TYPE_ONE, REPOSITORY_TYPE_TWO};
+	CreateRepResources(rep_ids, sizeof(rep_ids));
 	GetRoAndRunBusiness(ResourceTypeB::getTypeId(), 2);
     return 0;
 }
