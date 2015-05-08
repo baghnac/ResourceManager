@@ -7,9 +7,9 @@ using namespace std;
 #define REPOSITORY_TYPE_TWO 2
 #define REPOSITORY_TYPE_THREE 3
 
-#define TYPE_A_ID 0
-#define TYPE_B_ID 1
-#define TYPE_C_ID 2
+#define TYPE_A_ID 1
+#define TYPE_B_ID 2
+#define TYPE_C_ID 3
 
 #define MAX_RESOURCE_OBJS_OF_ONE_TYPE 20
 
@@ -78,13 +78,15 @@ struct ResourcePool{
     else if(expect_hash_code == typeid(Type).hash_code()){  \
         out_type_id = type_id; \
     }
-#define GET_RESOURCE_POINT(ExpectType, res_index, res) \
-    int type_id = 0xff; \
-    int expect_hash_code = typeid(ExpectType).hash_code(); \
-    if(false);  \
-    RESOURCE_TYPE_TABLE(GET_RESOURCE_TYPE_ID, expect_hash_code, type_id); \
-    ExpectType* res = GetRo<ExpectType>(type_id, res_index);
+#define GET_RESOURCE_POINT(ExpectType, res_index) \
+    GetRo<ExpectType>(GetTypeIdByHashCode(typeid(ExpectType).hash_code()), res_index);
 
+int GetTypeIdByHashCode(int hash_code){
+    int type_id = 0;
+    if(false);
+    RESOURCE_TYPE_TABLE(GET_RESOURCE_TYPE_ID, hash_code, type_id);
+    return type_id;
+}
 
 ResourcePool resourcePool[] = {RESOURCE_TYPE_TABLE(CREATE_RESOURCE_POOL, _, _)};
 
@@ -117,7 +119,7 @@ int main()
 	CreateRepResources(rep_ids, sizeof(rep_ids));
 
     int res_index = 2;
-	GET_RESOURCE_POINT(ResourceTypeB, res_index, res);
+	ResourceTypeB* res = GET_RESOURCE_POINT(ResourceTypeB, res_index);
 	if(res) res->realTypeBusiness();
     return 0;
 }
