@@ -56,21 +56,7 @@ struct ResourcePool{
 
 #define CREATE_RESOURCE_POOL(type_id, Type, _, __) {type_id, NULL},
 
-ResourcePool resourcePool[] = {RESOURCE_TYPE_TABLE(CREATE_RESOURCE_POOL, NULL, NULL)};
-
-
-void CreateOneResourceType(int type_id, int res_index){
-    Resource* res = NULL;
-    switch(type_id) {
-        RESOURCE_TYPE_TABLE(CREATE_RESOURCE, res_index, res);
-		default: {
-            break;
-        }
-    }
-    if(res){
-        resourcePool[type_id].ro[res_index] = res;
-    }
-}
+ResourcePool resourcePool[] = {RESOURCE_TYPE_TABLE(CREATE_RESOURCE_POOL, _, _)};
 
 struct RepositoryDecriptor{
     int rep_id;
@@ -86,6 +72,20 @@ static RepositoryDecriptor REPOSITORY_RESOURCE_DESCRIPTOR[] = {
     {REPOSITORY_TYPE_TWO, TYPE_C_ID, 2},
     {REPOSITORY_TYPE_THREE, TYPE_A_ID, 3},
 };
+
+void CreateOneResourceType(int type_id, int res_index){
+    Resource* res = NULL;
+    switch(type_id) {
+        RESOURCE_TYPE_TABLE(CREATE_RESOURCE, res_index, res);
+		default: {
+            break;
+        }
+    }
+    if(res){
+        resourcePool[type_id].ro[res_index] = res;
+    }
+}
+
 
 void CreateRepResources(int rep_id[], int rep_num){
     for(long rep_loop = 0; rep_loop < rep_num; rep_loop++)
@@ -108,6 +108,7 @@ int main()
     int rep_ids[2] = {REPOSITORY_TYPE_ONE, REPOSITORY_TYPE_TWO};
 	CreateRepResources(rep_ids, sizeof(rep_ids));
 	GetRoAndRunBusiness(ResourceTypeB::getTypeId(), 2);
+	cout << "typeid of ResourceTypeA is " << typeid(ResourceTypeA).hash_code() << endl;
     return 0;
 }
 
